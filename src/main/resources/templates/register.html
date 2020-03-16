@@ -1,0 +1,21 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Handling Form Submission</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+  <body>
+  <h1>
+    Skapa arendenumer
+  </h1>
+  <div> </div>
+   
+
+<form action="#" th:action="@{/register}" th:object="${arende}" method="post">
+   <p> Myndighet: <input type="text" th:field="*{myndighet}"/> </p>
+    <p> Nummer: <input type="text" th:field="*{arendenummer}"/></p>
+    <p> Datum: <input type="date" th:field="*{datum}"/></p>
+    <p> <input type="submit" value="Skapa"/> </p> 
+  </form> 
+  </body>
+</html>
