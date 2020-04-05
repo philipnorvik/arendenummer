@@ -20,7 +20,9 @@
 		 
       <!-- The main class to start by executing java -jar -->
       <start-class>se.rsv.arende.arendeinformationspring</start-class>
-  
+  <thymeleafspringsecurity5.version>3.0.3.RELEASE</thymeleafspringsecurity5.version>
+    <springframework.version>5.1.0.RELEASE</springframework.version>
+    <springsecurity.version>5.1.0.RELEASE</springsecurity.version>
 	</properties>
 
 	<dependencies>
@@ -56,16 +58,43 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
+        
 		 <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>runtime</scope>
         </dependency>
+        
+        			
+       <dependency>
+      <groupId>org.thymeleaf.extras</groupId>
+      <artifactId>thymeleaf-extras-springsecurity5</artifactId>
+      <version>${thymeleafspringsecurity5.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-core</artifactId>
+      <version>${springsecurity.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-web</artifactId>
+      <version>${springsecurity.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-config</artifactId>
+      <version>${springsecurity.version}</version>
+    </dependency>
+
 		 	
 		 			<!-- JSTL for JSP -->
 		<dependency>
-			<groupId>javax.servlet</groupId>
+			<groupId>jstl</groupId>
 			<artifactId>jstl</artifactId>
+			<version>${jstl.version}</version>
 		</dependency>
 	<!-- Tomcat embedded container-->
 		<dependency>
