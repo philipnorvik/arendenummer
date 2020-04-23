@@ -12,6 +12,4 @@ public interface ArendeRepository extends CrudRepository<Arende, Long>{
 	
 	Arende findById(long id);
 	
-	 Arende save(Arende a);
-
 }

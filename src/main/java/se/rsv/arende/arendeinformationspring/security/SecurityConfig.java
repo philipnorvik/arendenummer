@@ -1,34 +1,90 @@
 package se.rsv.arende.arendeinformationspring.security;
 
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
+import static org.springframework.security.core.userdetails.User.builder;
 @Configuration
 @EnableWebSecurity
-public class Security extends WebSecurityConfigurerAdapter {
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
+	@Bean
+	public PasswordEncoder passwordEncoder(){
+		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+	}
 
+	@Bean
+	public UserDetailsService userDetailsService() {
+		return new InMemoryUserDetailsManager(
+			builder()
+				.passwordEncoder(input -> passwordEncoder().encode(input))
+				.username("user")
+				.password("123")
+				.roles("USER")
+				.build(),
+			builder()
+				.passwordEncoder(input -> passwordEncoder().encode(input))
+				.username("admin")
+				.password("password")
+				.roles("USER", "ADMIN")
+				.build()
+		);
+	}
+	
 
-    public Security() {
-        super();
-    }
-
-
-    @Override
     protected void configure(final HttpSecurity http) throws Exception {
-        http
+        AuthenticationFailureHandler authenticationFailureHandler;
+        authenticationFailureHandler = new AuthenticationFailureHandler() {
+			
+			@Override
+			public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
+					AuthenticationException exception) throws IOException, ServletException {
+				// TODO Auto-generated method stub
+				System.out.print(exception);
+				System.out.print(response);
+				System.out.print(request);
+
+				
+			}
+		};
+		http
                 .formLogin()
-                .loginPage("/login.html")
-                .failureUrl("/login-error.html")
+                    .loginPage("/login")
+                    .successForwardUrl("/register")
+                    .usernameParameter("username").passwordParameter("password")
+                    .failureHandler(authenticationFailureHandler)
+                    .failureForwardUrl("/login-error")
+                    .permitAll()
+                    .and()
+                .logout().permitAll()
             .and()
                 .logout()
-                .logoutSuccessUrl("/index.html")
+                .logoutSuccessUrl("/index")
             .and()
                 .authorizeRequests()
+                .antMatchers("/register").hasRole("USER")
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/user/**").hasRole("USER")
                 .antMatchers("/shared/**").hasAnyRole("USER","ADMIN");
@@ -38,15 +94,6 @@ public class Security extends WebSecurityConfigurerAdapter {
 
     }
 
-
-    @Override
-    protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
-        auth
-                .inMemoryAuthentication()
-                .withUser("jim").password("{noop}demo").roles("ADMIN").and()
-                .withUser("bob").password("{noop}demo").roles("USER").and()
-                .withUser("ted").password("{noop}demo").roles("USER","ADMIN");
-    }
 
 
 }

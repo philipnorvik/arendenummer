@@ -17,7 +17,6 @@
 
 	<properties>
 		<java.version>1.8</java.version>
-		 
       <!-- The main class to start by executing java -jar -->
       <start-class>se.rsv.arende.arendeinformationspring</start-class>
   <thymeleafspringsecurity5.version>3.0.3.RELEASE</thymeleafspringsecurity5.version>
