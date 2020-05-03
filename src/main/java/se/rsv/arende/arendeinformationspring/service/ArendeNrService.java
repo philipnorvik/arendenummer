@@ -1,21 +1,28 @@
-package se.rsv.arende.arendeinformationspring.controller;
+package se.rsv.arende.arendeinformationspring.service;
 
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+
+import org.springframework.stereotype.Service;
+
 import se.rsv.arende.arendeinformationspring.exception.FelMyndighetException;
 import se.rsv.arende.arendeinformationspring.model.Arende;
+import se.rsv.arende.arendeinformationspring.service.util.ArendeNrGenerering;
+import se.rsv.arende.arendeinformationspring.service.util.ArendenummerGenereringSKV;
+import se.rsv.arende.arendeinformationspring.service.util.ArendenummerGenereringSRN;
+import se.rsv.arende.arendeinformationspring.service.util.ArendenummertjanstenLogger;
+
 import java.io.IOException;
 import java.util.List;
 
-@Stateless
-public class ArendeNrService {
+@Service
+public abstract class ArendeNrService implements IArendeNrService{
     //private static final String PERSISTENCE_UNIT_NAME = "arenden";
     //private static EntityManagerFactory factory;
-    //ArendeNrTjansten
+    
 
-  @PersistenceContext(unitName = "ArendeNrTjansten") //, type = PersistenceContextType.EXTENDED)
    protected EntityManager em;
 
    String arendenummer = null;
@@ -25,23 +32,20 @@ public class ArendeNrService {
     public ArendeNrService() {
     }
 
-   //  @GenerateSKV
-   // ArendeNrGenerering arendenummerGenerering
+  
 
-
-    //  @GenerateSRN
-    // ArendeNrGenerering arendenummerGenerering
-
-
+    /*
+     * Här görs val över vilken typ av ärendegenerering som ska användas. Den för SKV eller SRN.
+     */
     public String valAvMyndighet(String inparameterMyndighet) throws FelMyndighetException, IOException {
 
         if(inparameterMyndighet.equalsIgnoreCase("SKV")){
-            IArendeNrGenerering arendenummerGenerering = new ArendenummerGenereringSKV();
+        	ArendeNrGenerering arendenummerGenerering = new ArendenummerGenereringSKV();
             arendenummer = arendenummerGenerering.skapaArendeNr(inparameterMyndighet);
 
         }
         else if (inparameterMyndighet.equalsIgnoreCase("SRN")){
-            IArendeNrGenerering ArendenummerGenereringSRN = new ArendenummerGenereringSRN();
+        	ArendeNrGenerering ArendenummerGenereringSRN = new ArendenummerGenereringSRN();
             arendenummer = ArendenummerGenereringSRN.skapaArendeNr(inparameterMyndighet);
         }
         else {
@@ -52,6 +56,9 @@ public class ArendeNrService {
         return arendenummer;
     }
 
+    /*
+     * Här skapas ärendet i DB.
+     */
     public void createArende(String inparameterMyndighet){
 
         // create new arende
@@ -67,7 +74,7 @@ public class ArendeNrService {
         }
 
     }
-
+/*
     public void getArende() {
         Query q = em.createQuery("select a from Arende a");
         List<Arende> arendeList = q.getResultList();
@@ -76,32 +83,8 @@ public class ArendeNrService {
         }
         System.out.println("Size: " + arendeList.size());
     }
-
-    /*
-    @Resource
-    UserTransaction ut;
-    @PersistenceContext
-    EntityManager entityManager;
-    ...
-            try {
-        ut.begin();
-
-        Employee employee = new Employee();
-        employee.setEmpNo(empId);
-        employee.setEname(name);
-        employee.setSal(sal);
-
-        entityManager.persist(employee);
-        ut.commit();
-
-        this.getServletContext().getRequestDispatcher(
-                "/jsp/success.jsp").forward(request, response);
-    }
-    catch(Exception e) {
-    ...
-    }
-    */
-
+*/
+   
 
 
 }

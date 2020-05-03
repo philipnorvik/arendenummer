@@ -1,89 +1,91 @@
-package se.rsv.arende.arendeinformationspring.controller;
+package se.rsv.arende.arendeinformationspring.service.util;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
-public class ArendeNrGenerering {
+@Configuration
+@PropertySource("classpath:main/resources/myndighet.properties")
+public abstract class ArendeNrGenerering {
+
+	// final String PROP_FILE="myndighet.properties";
+
+	@Value("${prefix}")
+	private String prefix;
+
+	@Value("${declare}")
+	private String delare;
+
+	@Value("${antalSiffror}")
+	private int antalSiffror;
 	
-	Properties prop = new Properties();
-	   //final String PROP_FILE="myndighet.properties";
+	
+/*/
+ * Metod för att skapa en String av slumpade nummer.
+ */
 
-	   InputStream input;
-	    {
-	        try {
-	            input = new FileInputStream("classpath:main/resources/myndighet.properties");
-	            prop.load(input);
-	        } catch (FileNotFoundException e) {
-	            e.printStackTrace();
-	        } catch (IOException e) {
-	            e.printStackTrace();
-	        }
-	    }
+	static String getNummerString(int n) {
 
+		String NummerString = "0123456789";
+		StringBuilder sb = new StringBuilder(n);
 
+		for (int i = 0; i < n; i++) {
 
-	   static String getNummerString(int n){
+			// generate
+			int index = (int) (NummerString.length() * Math.random());
 
-	        String NummerString = "0123456789";
-	        StringBuilder sb = new StringBuilder(n);
+			// add
+			sb.append(NummerString.charAt(index));
+		}
 
-	        for (int i = 0; i < n; i++) {
+		return sb.toString();
+	}
+	
 
-	            // generate
-	            int index
-	                    = (int)(NummerString.length()
-	                    * Math.random());
+	
+	public String arendenummerString(String prefix, String delare, int antalSiffror) {
+		ArendenummertjanstenLogger aLogger = new ArendenummertjanstenLogger();
+		aLogger.skapaLogg();
 
-	            //add
-	            sb.append(NummerString
-	                    .charAt(index));
-	        }
+		int siffrorIArende = antalSiffror;
+		String arendePrefix = prefix;
+		String arendedelare = delare;
 
-	        return sb.toString();
-	   }
+		// String year = ;
 
-	    private String prefix = prop.getProperty("");
-	    private String delare = prop.getProperty("");
-	    private String antalSiffror = prop.getProperty("");
+		// arendePrefix.name + arendePrefix.int + arendePrefix.delare + arendePrefix.int
+		String skapatArendenummer = arendePrefix + getNummerString(siffrorIArende) + arendedelare
+				+ getNummerString(siffrorIArende);
 
-	    public String arendenummerString (String prefix, String delare, String antalSiffror) throws IOException {
-	        ArendenummertjanstenLogger aLogger = new ArendenummertjanstenLogger();
-	        aLogger.skapaLogg();
+		return skapatArendenummer;
+	}
 
+	/*
+	 * Metod som sätter ihop prefix antal siffror och 'delare' 
+	 */
+	
+	public String genereraArendenummer() {
+		ArendenummertjanstenLogger aLogger = new ArendenummertjanstenLogger();
+		aLogger.skapaLogg();
 
-	        int siffrorIArende = Integer.parseInt(antalSiffror);;
-	        String arendePrefix = prop.getProperty(prefix);
-	        String arendedelare = prop.getProperty(delare);
+		int siffrorIArende = antalSiffror;
 
-	        //String year = ;
+		String arendePrefix = prefix;
+		String arendedelare = delare;
 
-	        //arendePrefix.name + arendePrefix.int + arendePrefix.delare + arendePrefix.int
-	        String skapatArendenummer = arendePrefix + getNummerString(siffrorIArende)
-	                + arendedelare + getNummerString(siffrorIArende);
+		String arendeNummer = arendePrefix + getNummerString(siffrorIArende) + arendedelare
+				+ getNummerString(siffrorIArende);
 
-	        return skapatArendenummer;
-	    }
+		return arendeNummer;
 
-	    public String genereraArendenummer() throws IOException {
-	        ArendenummertjanstenLogger aLogger = new ArendenummertjanstenLogger();
-	        aLogger.skapaLogg();
+	}
 
-
-	        int siffrorIArende = Integer.parseInt(antalSiffror);
-
-	        String arendePrefix = prop.getProperty(prefix);
-	        String arendedelare = prop.getProperty(delare);
-
-
-	       String arendeNummer = arendePrefix + getNummerString(siffrorIArende)
-	                + arendedelare + getNummerString(siffrorIArende);
-
-	        return arendeNummer;
-
-	    }
+	
+	public String skapaArendeNr(String myndighet) throws IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

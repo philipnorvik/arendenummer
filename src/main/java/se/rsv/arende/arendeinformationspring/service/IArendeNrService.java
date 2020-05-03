@@ -1,9 +1,15 @@
-package se.rsv.arende.arendeinformationspring.controller;
+package se.rsv.arende.arendeinformationspring.service;
 
 import java.io.IOException;
 
-interface IArendeNrGenerering {
+import se.rsv.arende.arendeinformationspring.exception.FelMyndighetException;
 
-       public String skapaArendeNr(String myndighet) throws IOException;
+/*
+ * Interface för den abstrakta klassen ArendeNrService 
+ */
+interface IArendeNrService {
+       public String valAvMyndighet(String myndighet) throws IOException, FelMyndighetException;
+       void createArende(String inparameterMyndighet);
+       void getArende();
 }
 

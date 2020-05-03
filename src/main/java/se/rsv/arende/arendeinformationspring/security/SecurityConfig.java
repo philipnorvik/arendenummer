@@ -35,6 +35,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
 	}
 
+	
+	/*
+	 * Här skapar man med hjälp av encoder nya användare, deras lösenord och deras roll.
+	 * Det finns 2 olika roller admin och user.
+	 */
 	@Bean
 	public UserDetailsService userDetailsService() {
 		return new InMemoryUserDetailsManager(
@@ -53,6 +58,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		);
 	}
 	
+
+	/*
+	 * Om man fyller i fel lösenord eller användarnamn.
+	 * Då ska man skickas tillbaka till index-sidan.
+	 * 
+	 * Man kontrollerar de infyllda datan mot det som är det rätta.
+	 */
 
     protected void configure(final HttpSecurity http) throws Exception {
         AuthenticationFailureHandler authenticationFailureHandler;

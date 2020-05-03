@@ -1,34 +1,36 @@
-package se.rsv.arende.arendeinformationspring.controller;
+package se.rsv.arende.arendeinformationspring.service.util;
 
 import java.io.IOException;
+import org.springframework.beans.factory.annotation.Value;
+/*
+ * "intruktioner" för hur ett ärendenummer ska se ut om den tillhör SKV.
+ * Dvs. vilken prefix och hur många siffror som den ska ha.
+ */
+public class ArendenummerGenereringSKV extends ArendeNrGenerering {
 
-public class ArendenummerGenereringSKV extends ArendeNrGenerering implements IArendeNrGenerering {
+	@Value("${SKV.prefix}")
+	String prefix;
 
-    public ArendenummerGenereringSKV() {
+	@Value("${SKV.divider}")
+	String delare;
 
-    }
+	@Value("${SKV.int}")
+	int antalSiffror;
 
+	public ArendenummerGenereringSKV() {
 
+	}
 
+	@Override
+	public String skapaArendeNr(String myndighet) throws IOException {
+		ArendenummertjanstenLogger aLogger = new ArendenummertjanstenLogger();
+		aLogger.skapaLogg();
+		String aNummer = "";
 
-    @Override
-    public String skapaArendeNr(String myndighet) throws IOException {
-        ArendenummertjanstenLogger aLogger = new ArendenummertjanstenLogger();
-        aLogger.skapaLogg();
-        String aNummer = "";
+		if (myndighet.equalsIgnoreCase("SKV")) {
+			aNummer = arendenummerString(prefix, delare, antalSiffror);
+		}
 
-        if (myndighet.equalsIgnoreCase("SKV")){
-
-
-            String prefix = prop.getProperty("SKV.prefix");
-            String delare = prop.getProperty("SKV.divider");
-            String antalSiffror = prop.getProperty("SKV.int");
-
-            aNummer = arendenummerString(prefix,delare,antalSiffror);
-        }
-
-
-        return aNummer;
-    }
+		return aNummer;
+	}
 }
-

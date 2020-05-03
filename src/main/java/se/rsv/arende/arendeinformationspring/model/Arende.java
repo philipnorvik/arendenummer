@@ -6,6 +6,11 @@ import javax.persistence.*;
 /**
  * Entity implementation class for Entity: Arende
  *
+ *
+ *
+ *Modellen för ett ärendenummer.
+ *
+ *här finns det som kommer att finnas i databasen. 
  */
 @Entity
 public class Arende /* implements Serializable */ {

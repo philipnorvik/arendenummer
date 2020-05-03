@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import se.rsv.arende.arendeinformationspring.model.Arende;
 import se.rsv.arende.arendeinformationspring.service.ArendeInformationService;
+import se.rsv.arende.arendeinformationspring.service.ArendeNrService;
 
 @Controller
 public class MainController {
@@ -27,19 +28,21 @@ public class MainController {
 	@Autowired
 	ArendeInformationService service;
 
-	@RequestMapping("/")
+	@Autowired
+	ArendeNrService arendeNrService;
+	
+	@GetMapping("/")
 	public String Index() {
 		return "login";
 	}
 	// Login form
-	@RequestMapping("/login")
-	@GetMapping
+	@GetMapping("/login")
 	public String login() {
 		return "login";
 	}
 
 	// Login form with error
-	@RequestMapping("/login-error")
+	@GetMapping("/login-error")
 	public String loginError(Model model) {
 		model.addAttribute("loginError", true);
 		return "login.html";
