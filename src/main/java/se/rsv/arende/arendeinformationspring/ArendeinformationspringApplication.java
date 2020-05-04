@@ -15,8 +15,6 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import se.rsv.arende.arendeinformationspring.model.Arende;
 
 @SpringBootApplication
-//@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
-
 public class ArendeinformationspringApplication extends SpringBootServletInitializer {
 	
 	@Autowired

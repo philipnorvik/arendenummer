@@ -2,7 +2,15 @@ package se.rsv.arende.arendeinformationspring.service.util;
 
 import java.io.IOException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.env.Environment;
+
+import javax.annotation.Resource;
 
 
 /*
@@ -11,18 +19,18 @@ import org.springframework.beans.factory.annotation.Value;
  */
 public class ArendenummerGenereringSRN extends ArendeNrGenerering {
 
-	public ArendenummerGenereringSRN() {
 
+	private String prefix;
+	private String delare ;
+	private int antalSiffror;
+
+	public ArendenummerGenereringSRN() {
+		 super();
+		 prefix = prop.getProperty("SRN.prefix");
+		 delare = prop.getProperty("SRN.delare");
+		 antalSiffror = Integer.parseInt(prop.getProperty("SRN.antalSiffror"));
 	}
 
-	@Value("${SRN.prefix}")
-	String prefix;
-
-	@Value("${SRN.divider}")
-	String delare;
-
-	@Value("${SRN.int}")
-	int antalSiffror;
 
 	@Override
 	public String skapaArendeNr(String myndighet) throws IOException {

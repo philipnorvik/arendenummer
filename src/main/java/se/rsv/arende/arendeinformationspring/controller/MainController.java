@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.apache.tomcat.jni.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,31 +34,32 @@ public class MainController {
 	
 	@GetMapping("/")
 	public String Index() {
-		return "login";
+		return "redirect:/register";
 	}
 	// Login form
-	@GetMapping("/login")
+	/*@GetMapping("/login")
 	public String login() {
 		return "login";
-	}
+	}*/
 
-	// Login form with error
 	@GetMapping("/login-error")
 	public String loginError(Model model) {
 		model.addAttribute("loginError", true);
 		return "login.html";
 	}
 
+
 	@GetMapping("/register")
+
 	public String registerForm(Model model) {
 		model.addAttribute("arende", new Arende());
 		return "register";
 	}
 
-	@PostMapping(path = "/register" /* , method = RequestMethod.POST */)
-	public String registerSubmit(@ModelAttribute Arende arende) {
-		service.save(arende);
-		return "arendenummer";
+	@PostMapping(path = "/register" ,produces = MediaType.APPLICATION_JSON_VALUE)
+	public Arende registerSubmit(@ModelAttribute Arende arende) {
+		Arende arendeDTO = service.save(arende);
+		return arendeDTO;
 
 	}
 

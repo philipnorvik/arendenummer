@@ -1,27 +1,42 @@
 package se.rsv.arende.arendeinformationspring.service.util;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-@Configuration
-@PropertySource("classpath:main/resources/myndighet.properties")
+
 public abstract class ArendeNrGenerering {
 
-	// final String PROP_FILE="myndighet.properties";
+	final String PROP_FILE="myndighet.properties";
 
-	@Value("${prefix}")
 	private String prefix;
-
-	@Value("${declare}")
 	private String delare;
-
-	@Value("${antalSiffror}")
 	private int antalSiffror;
-	
-	
+	InputStream input;
+
+	Properties prop = new Properties();
+
+	public void loadProperties(){
+		{
+			try {
+				input = getClass().getClassLoader().getResourceAsStream(PROP_FILE);
+				prop.load(input);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	public ArendeNrGenerering (){
+		loadProperties();
+	}
 /*/
  * Metod för att skapa en String av slumpade nummer.
  */
@@ -85,7 +100,7 @@ public abstract class ArendeNrGenerering {
 	
 	public String skapaArendeNr(String myndighet) throws IOException {
 		// TODO Auto-generated method stub
-		return null;
+		return genereraArendenummer();
 	}
 
 }

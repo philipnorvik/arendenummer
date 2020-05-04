@@ -6,13 +6,16 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.context.annotation.Bean;
@@ -35,7 +38,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
 	}
 
-	
+	@Autowired
+	AuthenticationEntryPoint authEntryPoint;
 	/*
 	 * Här skapar man med hjälp av encoder nya användare, deras lösenord och deras roll.
 	 * Det finns 2 olika roller admin och user.
@@ -57,7 +61,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.build()
 		);
 	}
-	
+
+	@Autowired
+	public void configureGlobal(AuthenticationManagerBuilder authentication)
+			throws Exception
+	{
+		authentication.inMemoryAuthentication()
+				.withUser("admin")
+				.password(passwordEncoder().encode("password"))
+				.authorities("ROLE_USER");
+	}
 
 	/*
 	 * Om man fyller i fel lösenord eller användarnamn.
@@ -65,46 +78,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	 * 
 	 * Man kontrollerar de infyllda datan mot det som är det rätta.
 	 */
+	@Override
+	protected void configure(HttpSecurity httpSecurity) throws Exception {
 
-    protected void configure(final HttpSecurity http) throws Exception {
-        AuthenticationFailureHandler authenticationFailureHandler;
-        authenticationFailureHandler = new AuthenticationFailureHandler() {
-			
-			@Override
-			public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
-					AuthenticationException exception) throws IOException, ServletException {
-				// TODO Auto-generated method stub
-				System.out.print(exception);
-				System.out.print(response);
-				System.out.print(request);
+		httpSecurity.csrf().disable()
+				.authorizeRequests().anyRequest().authenticated()
+				.and().httpBasic();
 
-				
-			}
-		};
-		http
-                .formLogin()
-                    .loginPage("/login")
-                    .successForwardUrl("/register")
-                    .usernameParameter("username").passwordParameter("password")
-                    .failureHandler(authenticationFailureHandler)
-                    .failureForwardUrl("/login-error")
-                    .permitAll()
-                    .and()
-                .logout().permitAll()
-            .and()
-                .logout()
-                .logoutSuccessUrl("/index")
-            .and()
-                .authorizeRequests()
-                .antMatchers("/register").hasRole("USER")
-                .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/user/**").hasRole("USER")
-                .antMatchers("/shared/**").hasAnyRole("USER","ADMIN");
-        //    .and()
-        //        .exceptionHandling();
-         //       .accessDeniedPage("/403.html");
-
-    }
+	}
+	@Override
+	public void configure(WebSecurity web) throws Exception {
+		web.ignoring().antMatchers("/v2/api-docs",
+				"/configuration/ui",
+				"/swagger-resources/**",
+				"/configuration/security",
+				"/swagger-ui.html",
+				"/webjars/**");
+	}
 
 
 

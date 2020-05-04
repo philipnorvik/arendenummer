@@ -5,8 +5,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import se.rsv.arende.arendeinformationspring.ArendeRepository;
 import se.rsv.arende.arendeinformationspring.exception.FelMyndighetException;
 import se.rsv.arende.arendeinformationspring.model.Arende;
 import se.rsv.arende.arendeinformationspring.service.util.ArendeNrGenerering;
@@ -15,29 +17,33 @@ import se.rsv.arende.arendeinformationspring.service.util.ArendenummerGenerering
 import se.rsv.arende.arendeinformationspring.service.util.ArendenummertjanstenLogger;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 @Service
-public abstract class ArendeNrService implements IArendeNrService{
+public class ArendeNrService implements IArendeNrService{
     //private static final String PERSISTENCE_UNIT_NAME = "arenden";
     //private static EntityManagerFactory factory;
     
 
-   protected EntityManager em;
+    @Autowired
+    protected EntityManager em;
 
-   String arendenummer = null;
-   String inparameterMyndighet = null;
-   String felmeddelande = "Felaktig inmatning";
+    @Autowired
+    ArendeRepository arendeRepository;
+
+       String felmeddelande = "Felaktig inmatning";
 
     public ArendeNrService() {
     }
-
-  
 
     /*
      * Här görs val över vilken typ av ärendegenerering som ska användas. Den för SKV eller SRN.
      */
     public String valAvMyndighet(String inparameterMyndighet) throws FelMyndighetException, IOException {
+        String arendenummer = null;
 
         if(inparameterMyndighet.equalsIgnoreCase("SKV")){
         	ArendeNrGenerering arendenummerGenerering = new ArendenummerGenereringSKV();
@@ -52,39 +58,29 @@ public abstract class ArendeNrService implements IArendeNrService{
             throw new FelMyndighetException(new Exception(felmeddelande));
         }
 
-        this.inparameterMyndighet = inparameterMyndighet;
         return arendenummer;
     }
 
     /*
      * Här skapas ärendet i DB.
      */
-    public void createArende(String inparameterMyndighet){
-
+    public Arende createArende(String inparameterMyndighet) throws IOException, FelMyndighetException {
         // create new arende
-        ///em.getTransaction().begin();
         Arende arende = new Arende();
-        arende.setArendenummer(arendenummer);
+        arende.setArendenummer(valAvMyndighet(inparameterMyndighet));
         arende.setMyndighet(inparameterMyndighet);
-        em.persist(arende);
-        Query q = em.createQuery("select a from Arende a");
-        List<Arende> arendeList = q.getResultList();
-        for (Arende arendeQ : arendeList) {
-            System.out.println(arendeQ);
-        }
-
+        arende.setDatum(new Date());
+        arendeRepository.save(arende);
+        return arende;
     }
-/*
-    public void getArende() {
-        Query q = em.createQuery("select a from Arende a");
-        List<Arende> arendeList = q.getResultList();
-        for (Arende arende : arendeList) {
-            System.out.println(arende);
-        }
-        System.out.println("Size: " + arendeList.size());
-    }
-*/
-   
 
+    public List<Arende> getArenden() {
+        List<Arende> arenden = new ArrayList<>();
+        arendeRepository.findAll().forEach(arenden::add);
+        return arenden;
+    }
+    public Arende getArende(String arendenummer) {
+        return arendeRepository.findByArendenummer(arendenummer);
+    }
 
 }

@@ -2,6 +2,8 @@ package se.rsv.arende.arendeinformationspring.model;
 
 //import java.io.Serializable;
 import javax.persistence.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Entity implementation class for Entity: Arende
@@ -51,8 +53,9 @@ public class Arende /* implements Serializable */ {
 		return datum;
 	}
 
-	public void setDatum(String datum) {
-		this.datum = datum;
+	public void setDatum(Date datum) {
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		this.datum = formatter.format(datum);
 	}
 
 	public void setArendenummer(String arendenummer) {
