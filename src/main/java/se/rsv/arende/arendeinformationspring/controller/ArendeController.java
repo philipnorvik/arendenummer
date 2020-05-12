@@ -1,10 +1,12 @@
 package se.rsv.arende.arendeinformationspring.controller;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.Locale;
 
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -12,7 +14,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import org.springframework.web.bind.annotation.RequestParam;
 import se.rsv.arende.arendeinformationspring.exception.FelMyndighetException;
+import se.rsv.arende.arendeinformationspring.model.Arende;
 import se.rsv.arende.arendeinformationspring.service.ArendeNrService;
 
 @Controller
@@ -51,24 +55,23 @@ public class ArendeController {
 
 
 
-	@PostMapping("/")
+	@PostMapping("/register")
 	@ApiOperation(value = "Skapa ärende på inskickad myndighet", response = ResponseEntity.class)
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Skapat arende"),
 			@ApiResponse(code = 401, message = "Du är inte inloggad"),
 			@ApiResponse(code = 500, message = "Myndighet finns inte"),
 	})
-
-
-	public ResponseEntity post(String myndighet) {
+	public ResponseEntity post(@RequestParam("orgnummer") String orgnummer, @RequestParam("myndighet")String myndighet, @RequestParam("datum") @DateTimeFormat(pattern="yyyy-MM-dd") Date datum) {
+		Arende arende;
 		try {
-			arendeNrService.createArende(myndighet);
+			arende = arendeNrService.createArende(myndighet);
 		} catch (IOException e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (FelMyndighetException e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<>(arende,HttpStatus.OK);
 	}
 
 	@PostMapping("/valAvMyndighet")

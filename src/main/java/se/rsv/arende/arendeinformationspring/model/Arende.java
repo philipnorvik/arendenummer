@@ -38,13 +38,33 @@ public class Arende /* implements Serializable */ {
 	
 	@Column(name="datum")
 	private String datum;
-	
+
+	@Column(name="orgnummer")
+	private String orgnummer;
 	//@Transient
 	//private static final long serialVersionUID = 1L;
-	
-	
 
-	
+
+	public void setDatum(String datum) {
+		this.datum = datum;
+	}
+
+	public String getOrgnummer() {
+		return orgnummer;
+	}
+
+	public void setOrgnummer(String orgnummer) {
+		this.orgnummer = orgnummer;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	public String getArendenummer() {
 		return this.arendenummer;
 	}
