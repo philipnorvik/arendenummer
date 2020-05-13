@@ -48,19 +48,4 @@ public class MainController {
 		return "login.html";
 	}
 
-
-	@GetMapping("/register")
-
-	public String registerForm(Model model) {
-		model.addAttribute("arende", new Arende());
-		return "register";
-	}
-
-	@PostMapping(path = "/register" ,produces = MediaType.APPLICATION_JSON_VALUE)
-	public Arende registerSubmit(@ModelAttribute Arende arende) {
-		Arende arendeDTO = service.save(arende);
-		return arendeDTO;
-
-	}
-
 }

@@ -2,6 +2,10 @@ package se.rsv.arende.arendeinformationspring.model;
 
 //import java.io.Serializable;
 import javax.persistence.*;
+
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -15,39 +19,50 @@ import java.util.Date;
  *här finns det som kommer att finnas i databasen. 
  */
 @Entity
-public class Arende /* implements Serializable */ {
+public class Arende {
 
 	public Arende() {
-	//	super();
 	}
-	
-	
-	 public Arende(String arendenummer, String myndighet, String datum) { //
-	 this.arendenummer=arendenummer; this.myndighet=myndighet; this.datum=datum; }
-	 
-	
-	 @Id
-	 @GeneratedValue(strategy = GenerationType.AUTO)
+
+
+	public Arende(String arendenummer, String myndighet, String datum) { 
+		this.arendenummer=arendenummer; this.myndighet=myndighet; this.datum=datum; }
+
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	 
+
 	@Column(name="arendenummer")
 	private String arendenummer;
-	
+
 	@Column(name="myndighet")
 	private String myndighet;
-	
+
 	@Column(name="datum")
 	private String datum;
 
 	@Column(name="orgnummer")
 	private String orgnummer;
-	//@Transient
-	//private static final long serialVersionUID = 1L;
+
+	@CreationTimestamp
+	@Column(name="skapad")
+	private Timestamp skapad;
 
 
 	public void setDatum(String datum) {
 		this.datum = datum;
 	}
+
+	public Timestamp getSkapad() {
+		return skapad;
+	}
+
+
+	public void setSkapad(Timestamp skapad) {
+		this.skapad = skapad;
+	}
+
 
 	public String getOrgnummer() {
 		return orgnummer;
@@ -88,9 +103,12 @@ public class Arende /* implements Serializable */ {
 	public void setMyndighet(String myndighet) {
 		this.myndighet = myndighet;
 	}
-	 @Override
-	    public String toString() {
-	        return String.format("Arende [id=%d, arendenummer='%s', myndighet='%s', datum='%s']",
-	        		id, arendenummer, myndighet, datum);
-	    }
+
+
+	@Override
+	public String toString() {
+		return "Arende [id=" + id + ", arendenummer=" + arendenummer + ", myndighet=" + myndighet + ", datum=" + datum
+				+ ", orgnummer=" + orgnummer + ", skapad=" + skapad + "]";
+	}
+
 }

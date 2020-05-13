@@ -37,8 +37,8 @@ public class ArendeController {
 			@ApiResponse(code = 500, message = "Myndighet finns inte"),
 	})
 	public ResponseEntity get(String arendenr) {
-		arendeNrService.getArende(arendenr);
-		return new ResponseEntity<>(HttpStatus.OK);
+		
+		return new ResponseEntity<>(arendeNrService.getArende(arendenr), HttpStatus.OK);
 	}
 
 
@@ -65,7 +65,7 @@ public class ArendeController {
 	public ResponseEntity post(@RequestParam("orgnummer") String orgnummer, @RequestParam("myndighet")String myndighet, @RequestParam("datum") @DateTimeFormat(pattern="yyyy-MM-dd") Date datum) {
 		Arende arende;
 		try {
-			arende = arendeNrService.createArende(myndighet);
+			arende = arendeNrService.createArende( myndighet,datum,orgnummer);
 		} catch (IOException e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (FelMyndighetException e) {

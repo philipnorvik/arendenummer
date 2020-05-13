@@ -64,12 +64,13 @@ public class ArendeNrService implements IArendeNrService{
     /*
      * Här skapas ärendet i DB.
      */
-    public Arende createArende(String inparameterMyndighet) throws IOException, FelMyndighetException {
+    public Arende createArende(String inparameterMyndighet,Date datum,String orgnummer) throws IOException, FelMyndighetException {
         // create new arende
         Arende arende = new Arende();
         arende.setArendenummer(valAvMyndighet(inparameterMyndighet));
         arende.setMyndighet(inparameterMyndighet);
-        arende.setDatum(new Date());
+        arende.setDatum(datum);
+        arende.setOrgnummer(orgnummer);
         arendeRepository.save(arende);
         return arende;
     }
